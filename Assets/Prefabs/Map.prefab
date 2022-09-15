@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7831726621920598992
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5720798537528753958}
+  - component: {fileID: 2246202187650298461}
+  m_Layer: 0
+  m_Name: Map
+  m_TagString: Map
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5720798537528753958
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7831726621920598992}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2246202187650298461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7831726621920598992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68a1988f6732bd1409a59d6e6f0298e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MinDirections: 1
+  MaxDirections: 4
+  MinLength: 8
+  MaxLength: 11
+  AlternatePathDecreaseRatio: 1.2
+  IncreasePathLength: 1
+  Seed: 0
+  Rooms:
+  - {fileID: -5469813212514401803, guid: 37e1fd19aa1b6e24bacda077159571f7, type: 3}
+  - {fileID: -5469813212514401803, guid: 49ec001cd8220dc47a64259a3fbf18f5, type: 3}
+  - {fileID: -5469813212514401803, guid: d2081086e88ab8f48a9614a797a7407f, type: 3}
+  - {fileID: -5469813212514401803, guid: cf69ca14435ab824c873ee6dcd74f373, type: 3}
+  - {fileID: -5469813212514401803, guid: d9d11587e95709f4185d70f315f9a2df, type: 3}
+  - {fileID: -5469813212514401803, guid: c3fa4dd13a4e05f4ca991a7e0aeccd28, type: 3}
+  - {fileID: -5469813212514401803, guid: 506d53996a049c04581810c1794f6cf7, type: 3}
+  - {fileID: -5469813212514401803, guid: 8dd70003572717a469e074935cdd86ca, type: 3}
+  Masks:
+  - Direction: 1
+    RoomMask: {fileID: -2523575855527156807, guid: 99557e5d1a8e2fd41b7463e1660fce8c, type: 3}
+  - Direction: 2
+    RoomMask: {fileID: 1587572907208387825, guid: 370e610b5f21c91428207191da694943, type: 3}
+  - Direction: 3
+    RoomMask: {fileID: 3631604582229410135, guid: 892bc728f74f61644aaeb7eb157d1580, type: 3}
+  - Direction: 4
+    RoomMask: {fileID: -3125335748541729763, guid: 1efe6e1166b861741a82d48d797b421d, type: 3}
