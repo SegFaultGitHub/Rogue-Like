@@ -121,6 +121,7 @@ public class Map : MonoBehaviour {
         } else {
             this.Seed = Random.seed;
         }
+        FindObjectOfType<DebugUI>().SetSeed(this.Seed);
 
         List<Direction> directions = new() { Direction.Up, Direction.Down, Direction.Left, Direction.Right };
         int count = Random.Range(this.MinDirections, this.MaxDirections + 1);
