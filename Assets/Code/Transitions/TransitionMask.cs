@@ -1,25 +1,30 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TransitionMask : MonoBehaviour {
-    public Func<int> OnComplete;
+    [Serializable]
+    private struct MaskSprite {
+        public Direction Direction;
+        public Sprite Sprite;
+    }
 
-    [SerializeField] private bool AutoActivate;
+    public Func<int> OnComplete;
     private SpriteMask SpriteMask;
     private Transform Camera;
+    [SerializeField] private List<MaskSprite> Sprites;
 
-    public void Start() {
+    public void Awake() {
         this.SpriteMask = this.GetComponentInChildren<SpriteMask>();
         this.Camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
-
-        if (this.AutoActivate) { this.Activate(); }
     }
 
     public void Update() {
         this.transform.position = new(this.Camera.position.x, this.Camera.position.y, this.transform.position.z);
     }
 
-    public LTDescr Activate() {
+    public LTDescr Activate(Direction direction) {
+        this.SpriteMask.sprite = this.Sprites.Find(maskSprite => maskSprite.Direction == direction).Sprite;
         return LeanTween
             .value(this.gameObject, 0, 1, 0.33f)
             .setEaseInQuad()
