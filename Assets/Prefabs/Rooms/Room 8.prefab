@@ -50,7 +50,7 @@ GameObject:
   m_Layer: 0
   m_Name: Room 8
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartingPosition: {x: 0, y: -3}
-  Enabled: 1
+  Enabled: 0
   Position: {x: 0, y: 0}
   FromLeftPosition: {x: -15, y: -1.5}
   FromRightPosition: {x: 15, y: -1.5}

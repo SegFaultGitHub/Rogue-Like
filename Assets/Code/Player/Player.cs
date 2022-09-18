@@ -21,5 +21,17 @@ public class Player : MonoBehaviour {
             map.ChangeRoom(Direction.Down);
             return;
         }
+
+        if (collider.CompareTag("Enemy/DetectionZone")) {
+            Enemy enemy = collider.gameObject.GetComponent<Enemy>();
+            enemy.GainFocus();
+        }
+    }
+
+    public void OnTriggerExit2D(Collider2D collider) {
+        if (collider.CompareTag("Enemy/DetectionZone")) {
+            Enemy enemy = collider.gameObject.GetComponent<Enemy>();
+            enemy.LoseFocus();
+        }
     }
 }

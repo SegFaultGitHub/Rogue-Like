@@ -14,8 +14,7 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody2D Rigidbody;
     private PlayerInputs PlayerInputs;
     private Animator Animator;
-
-    [SerializeField] private GameObject Sprites;
+    private GameObject Sprites;
 
     #region Input
     private void OnEnable() {
@@ -41,6 +40,7 @@ public class PlayerController : MonoBehaviour {
     public void Start() {
         this.Animator = this.GetComponent<Animator>();
         this.Rigidbody = this.GetComponentInChildren<Rigidbody2D>();
+        this.Sprites = this.transform.Find("Sprites").gameObject;
     }
 
     public void FixedUpdate() {

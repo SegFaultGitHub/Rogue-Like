@@ -26,7 +26,7 @@ public class RuleTileGenerator : EditorWindow {
         new Vector3Int(1, -1, 0),
     };
 
-    [MenuItem("VinTools/Editor Windows/Rule Tile Generator")]
+    [MenuItem("Tools/Rule Tile Generator")]
     public static void ShowWindow() {
         GetWindow<RuleTileGenerator>("Rule Tile Generator");
     }
