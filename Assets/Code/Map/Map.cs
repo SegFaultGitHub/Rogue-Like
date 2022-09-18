@@ -76,7 +76,7 @@ public class Map : MonoBehaviour {
         TransitionMask transitionOutPrefab = Resources.Load<TransitionMask>("Transitions/TransitionOut");
 
         TransitionMask transitionOut = Instantiate(transitionOutPrefab);
-        transitionOut.Activate()
+        transitionOut.Activate(direction)
             .setOnComplete(() => {
 
                 this.CurrentRoom.gameObject.SetActive(false);
@@ -108,7 +108,7 @@ public class Map : MonoBehaviour {
 
                 TransitionMask transitionIn = Instantiate(transitionInPrefab);
                 Destroy(transitionOut.gameObject);
-                transitionIn.Activate()
+                transitionIn.Activate(direction)
                     .setOnComplete(() => {
                         Destroy(transitionIn.gameObject);
                     });
@@ -255,17 +255,17 @@ public class Map : MonoBehaviour {
         room.name = "Room: " + position.x + "/" + position.y + " [" + roomPrefab.name + "]";
 
         Tilemap[] roomLayers = room.GetComponentsInChildren<Tilemap>();
-        roomLayers[0].CompressBounds();
-        BoundsInt roomBounds = roomLayers[0].cellBounds;
 
         masks.ForEach(mask => {
             Tilemap[] maskLayers = mask.GetComponentsInChildren<Tilemap>();
-            maskLayers[0].CompressBounds();
-            BoundsInt maskBounds = maskLayers[0].cellBounds;
 
             for (int layerIndex = 0; layerIndex < maskLayers.Length && layerIndex < roomLayers.Length; layerIndex++) {
                 Tilemap maskLayer = maskLayers[layerIndex];
                 Tilemap roomLayer = roomLayers[layerIndex];
+                maskLayer.CompressBounds();
+                BoundsInt maskBounds = maskLayer.cellBounds;
+                roomLayer.CompressBounds();
+                BoundsInt roomBounds = roomLayer.cellBounds;
                 for (int x = maskBounds.min.x, localX = 0; x < maskBounds.max.x; x++, localX++) {
                     for (int y = maskBounds.min.y, localY = 0; y < maskBounds.max.y; y++, localY++) {
                         for (int z = maskBounds.min.z, localZ = 0; z < maskBounds.max.z; z++, localZ++) {

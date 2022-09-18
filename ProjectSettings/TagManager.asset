@@ -9,6 +9,7 @@ TagManager:
   - Door/Right
   - Door/Down
   - Map
+  - Enemy/DetectionZone
   layers:
   - Default
   - TransparentFX
@@ -16,15 +17,15 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player/Player
+  - Enemy/Enemy
+  - Map/Map
+  - Enemy/Spell
+  - Player/Spell
+  - Map/Floor
+  - Map/Walls
+  - Player/Hitbox
+  - Enemy/Hitbox
   - 
   - 
   - 
