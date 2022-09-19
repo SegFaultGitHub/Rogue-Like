@@ -44,15 +44,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68a1988f6732bd1409a59d6e6f0298e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MinDirections: 1
+  MinDirections: 2
   MaxDirections: 4
-  MinLength: 8
-  MaxLength: 11
+  MinLength: 2
+  MaxLength: 7
   AlternatePathDecreaseRatio: 1.2
   IncreasePathLength: 1
   Seed: 0
-  Rooms:
+  RoomTemplates:
   - {fileID: -5469813212514401803, guid: 110d5348685ac6c4db0eea5e10a4d961, type: 3}
+  - {fileID: -5469813212514401803, guid: c2542c1a3aa2b484bb6e34165ebedb33, type: 3}
+  - {fileID: -5469813212514401803, guid: 4de0357ae731ae44c93fe89e25a41205, type: 3}
+  - {fileID: -5469813212514401803, guid: 595c02e24b970604b86d9709b4048fae, type: 3}
+  - {fileID: -5469813212514401803, guid: f2e11788e471eef4a91cd620e7b21bd7, type: 3}
   Masks:
   - Direction: 1
     RoomMask: {fileID: 1587572907208387825, guid: 24d970150aec16c478854592d5e4c0b4, type: 3}
@@ -62,3 +66,13 @@ MonoBehaviour:
     RoomMask: {fileID: 1587572907208387825, guid: e91a58d626052004eb55fe2d7915a317, type: 3}
   - Direction: 4
     RoomMask: {fileID: 1587572907208387825, guid: 9aa60c59d91c5364c913fe2ece80e2dd, type: 3}
+  MapLayoutData:
+    MinI: 0
+    MinJ: 0
+    MaxI: 0
+    MaxJ: 0
+    RoomSize: {x: 16, y: 9}
+    DoorOffset: {x: 2, y: 2}
+    RoomOffset: {x: 1, y: 1}
+    TextureSize: {x: 0, y: 0}
+    Texture: {fileID: 0}

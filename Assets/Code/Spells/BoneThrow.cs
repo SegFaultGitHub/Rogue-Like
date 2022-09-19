@@ -20,7 +20,7 @@ public class BoneThrow : Spell {
     }
 
     public void OnCollisionEnter2D(Collision2D collision) {
-        this.Rigidbody.velocity = new();
+        this.Rigidbody.velocity = Vector2.zero;
         float angle = Vector2.SignedAngle(new(1, 0), -collision.contacts[0].normal);
         this.transform.eulerAngles = new(0, 0, angle);
         this.Rigidbody.simulated = false;

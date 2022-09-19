@@ -1,8 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
+    [Serializable]
+    public struct _HP {
+        public int Current;
+        public int Max;
+    }
+
+    [SerializeField] public _HP HP;
+
     public void OnTriggerEnter2D(Collider2D collider) {
         if (collider.CompareTag("Door/Left")) {
             Map map = GameObject.FindGameObjectWithTag("Map").GetComponent<Map>();

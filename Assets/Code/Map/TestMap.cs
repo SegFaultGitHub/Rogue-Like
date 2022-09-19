@@ -8,7 +8,7 @@ public class TestMap : MonoBehaviour {
     public void Start() {
         Room roomPrefab = Utils.Sample(this.Rooms);
         Room room = Instantiate(roomPrefab);
-        Vector2Int position = new();
+        Vector2Int position = Vector2Int.zero;
         room.Position = position;
         room.name = "Room: " + position.x + "/" + position.y + " [" + roomPrefab.name + "]";
     }
