@@ -1,0 +1,34 @@
+{
+    "name": "HUDInputs",
+    "maps": [
+        {
+            "name": "Actions",
+            "id": "05371b3c-3c5a-4a9f-a2f1-67cef2c45f5d",
+            "actions": [
+                {
+                    "name": "ToggleMap",
+                    "type": "Button",
+                    "id": "e473f8e8-69b0-490f-b1bb-0c1017b02f28",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "70739cfc-da85-47f6-b196-75eea11c57bd",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleMap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

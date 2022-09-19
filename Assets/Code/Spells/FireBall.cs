@@ -16,14 +16,14 @@ public class FireBall : Spell {
         this.Rigidbody.velocity = this.Direction;
 
         if (Time.time - this.SpawnDate > this.MaxAge) {
-            this.Rigidbody.velocity = new();
+            this.Rigidbody.velocity = Vector2.zero;
             this.Rigidbody.simulated = false;
             this.Animator.SetTrigger("Die");
         }
     }
 
     public void OnCollisionEnter2D(Collision2D collision) {
-        this.Rigidbody.velocity = new();
+        this.Rigidbody.velocity = Vector2.zero;
         float angle = Vector2.SignedAngle(new(1, 0), -collision.contacts[0].normal);
         this.transform.eulerAngles = new(0, 0, angle);
         this.Rigidbody.simulated = false;

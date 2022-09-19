@@ -4,7 +4,6 @@ using UnityEngine.Tilemaps;
 using System.Linq;
 using System;
 using Random = UnityEngine.Random;
-using UnityEngine.UI;
 
 public enum Direction {
     None = 0,
@@ -17,6 +16,7 @@ public class Map : MonoBehaviour {
         public Dictionary<Direction, RoomEntry> Doors;
         public bool Start, End;
         public Room Room;
+        public bool Drawn;
 
         public RoomEntry(Vector2Int position) {
             this.Position = position;
@@ -37,6 +37,15 @@ public class Map : MonoBehaviour {
         public Direction Direction;
         public RoomMask RoomMask;
     }
+    [Serializable]
+    public struct _MapLayoutData {
+        public int MinI, MinJ, MaxI, MaxJ;
+        public Vector2Int RoomSize;
+        public Vector2Int DoorOffset;
+        public Vector2Int RoomOffset;
+        public Vector2Int TextureSize;
+        public Texture2D Texture;
+    }
 
     [Header("Map attributes")]
     [Tooltip("The minimum number of doors in the first room")]
@@ -56,19 +65,40 @@ public class Map : MonoBehaviour {
     [SerializeField] private bool IncreasePathLength = true;
     [SerializeField] private int Seed;
 
-    [SerializeField] private List<Room> Rooms;
+    [SerializeField] private List<Room> RoomTemplates;
     [SerializeField] private List<Mask> Masks;
 
     private Dictionary<Vector2Int, RoomEntry> RoomEntries;
-    private Vector2Int ActiveRoom = new();
-    private Room CurrentRoom { get => this.RoomEntries[this.ActiveRoom].Room; }
+    private Vector2Int CurrentRoomPosition = Vector2Int.zero;
+    private Room CurrentRoom { get => this.RoomEntries[this.CurrentRoomPosition].Room; }
+    public _MapLayoutData MapLayoutData;
+
+    private PlayerHUD PlayerHUD;
+    private Player Player;
 
     public void Start() {
         this.GenerateMap();
         this.GenerateSpecialRooms();
+        this.CreateMapLayoutSprite();
+        this.PlayerHUD = GameObject.FindGameObjectWithTag("Player/PlayerHUD").GetComponent<PlayerHUD>();
+        this.Player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
 
+        this.ChangeRoom(Vector2Int.zero);
+    }
+
+    public void ChangeRoom(Vector2Int position) {
+        this.CurrentRoom.gameObject.SetActive(false);
+        this.CurrentRoomPosition = position;
         Vector2 startingPosition = this.CurrentRoom.StartingPosition;
-        GameObject.FindGameObjectWithTag("Player").transform.position = new(startingPosition.x, startingPosition.y);
+        this.Player.transform.position = new(startingPosition.x, startingPosition.y);
+        if (!this.RoomEntries[this.CurrentRoomPosition].Drawn) {
+            Sprite sprite = this.DrawRoomOnMapLayout(this.CurrentRoom);
+            this.PlayerHUD.SetMapSprite(sprite);
+        }
+        this.PlayerHUD.MoveMapLayout(this.CurrentRoomPosition, this.MapLayoutData);
+
+        this.CurrentRoom.gameObject.SetActive(true);
+        FindObjectOfType<DebugUI>().SetMapPosition(this.CurrentRoomPosition);
     }
 
     public void ChangeRoom(Direction direction) {
@@ -78,33 +108,29 @@ public class Map : MonoBehaviour {
         TransitionMask transitionOut = Instantiate(transitionOutPrefab);
         transitionOut.Activate(direction)
             .setOnComplete(() => {
-
-                this.CurrentRoom.gameObject.SetActive(false);
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
                 Vector2 position;
                 switch (direction) {
                     case Direction.Left:
-                        this.ActiveRoom = new(this.ActiveRoom.x - 1, this.ActiveRoom.y);
+                        this.ChangeRoom(new Vector2Int(this.CurrentRoomPosition.x - 1, this.CurrentRoomPosition.y));
                         position = this.CurrentRoom.FromRightPosition;
-                        player.transform.position = new(position.x, position.y);
+                        this.Player.transform.position = new(position.x, position.y);
                         break;
                     case Direction.Right:
-                        this.ActiveRoom = new(this.ActiveRoom.x + 1, this.ActiveRoom.y);
+                        this.ChangeRoom(new Vector2Int(this.CurrentRoomPosition.x + 1, this.CurrentRoomPosition.y));
                         position = this.CurrentRoom.FromLeftPosition;
-                        player.transform.position = new(position.x, position.y);
+                        this.Player.transform.position = new(position.x, position.y);
                         break;
                     case Direction.Up:
-                        this.ActiveRoom = new(this.ActiveRoom.x, this.ActiveRoom.y - 1);
+                        this.ChangeRoom(new Vector2Int(this.CurrentRoomPosition.x, this.CurrentRoomPosition.y - 1));
                         position = this.CurrentRoom.FromBelowPosition;
-                        player.transform.position = new(position.x, position.y);
+                        this.Player.transform.position = new(position.x, position.y);
                         break;
                     case Direction.Down:
-                        this.ActiveRoom = new(this.ActiveRoom.x, this.ActiveRoom.y + 1);
+                        this.ChangeRoom(new Vector2Int(this.CurrentRoomPosition.x, this.CurrentRoomPosition.y + 1));
                         position = this.CurrentRoom.FromAbovePosition;
-                        player.transform.position = new(position.x, position.y);
+                        this.Player.transform.position = new(position.x, position.y);
                         break;
                 };
-                this.CurrentRoom.gameObject.SetActive(true);
 
                 TransitionMask transitionIn = Instantiate(transitionInPrefab);
                 Destroy(transitionOut.gameObject);
@@ -145,12 +171,15 @@ public class Map : MonoBehaviour {
         this.Masks.ForEach(mask => masks[mask.Direction] = mask.RoomMask);
 
         this.RoomEntries.Values.ToList().ForEach(roomEntry => {
-            List<Room> _;
             Room room = Utils.Sample(
-                _ = this.Rooms.Where(room => room.Enabled && this.IsRoomValid(room, roomEntry.Doors.Keys.ToList())).ToList()
+                this.RoomTemplates.Where(room => room.Enabled && this.IsRoomValid(room, roomEntry.Doors.Keys.ToList())).ToList()
             );
             roomEntry.Room = this.SetRoom(room, roomEntry.Doors.Keys.Select(key => masks[key]).ToList(), roomEntry.Position);
             roomEntry.Room.Directions = roomEntry.Doors.Keys.ToArray();
+            if (this.MapLayoutData.MinI > roomEntry.Room.Position.x) { this.MapLayoutData.MinI = roomEntry.Room.Position.x; }
+            if (this.MapLayoutData.MaxI < roomEntry.Room.Position.x) { this.MapLayoutData.MaxI = roomEntry.Room.Position.x; }
+            if (this.MapLayoutData.MinJ > roomEntry.Room.Position.y) { this.MapLayoutData.MinJ = roomEntry.Room.Position.y; }
+            if (this.MapLayoutData.MaxJ < roomEntry.Room.Position.y) { this.MapLayoutData.MaxJ = roomEntry.Room.Position.y; }
         });
 
         this.CurrentRoom.gameObject.SetActive(true);
@@ -280,5 +309,87 @@ public class Map : MonoBehaviour {
         });
 
         return room;
+    }
+
+    private Sprite DrawRoomOnMapLayout(Room room) {
+        Vector2Int upDownDoorSize = new(
+            this.MapLayoutData.RoomSize.x - 2 * this.MapLayoutData.DoorOffset.x,
+            this.MapLayoutData.RoomOffset.y
+        );
+        Vector2Int leftRightDoorSize = new(
+            this.MapLayoutData.RoomOffset.x,
+            this.MapLayoutData.RoomSize.y - 2 * this.MapLayoutData.DoorOffset.y
+        );
+        Color32 roomColor = new(255, 255, 255, 192);
+        Color32 doorColor = new(255, 255, 255, 128);
+        int localX = (room.Position.x - this.MapLayoutData.MinI) * this.MapLayoutData.RoomSize.x;
+        int localY = (room.Position.y - this.MapLayoutData.MinJ) * this.MapLayoutData.RoomSize.y;
+        this.SetPixels(
+            this.MapLayoutData.Texture,
+            new(localX + this.MapLayoutData.RoomOffset.x, localY + this.MapLayoutData.RoomOffset.y),
+            new(this.MapLayoutData.RoomSize.x - 2 * this.MapLayoutData.RoomOffset.x, this.MapLayoutData.RoomSize.y - 2 * this.MapLayoutData.RoomOffset.y),
+            roomColor
+        );
+
+        foreach (Direction direction in room.Directions) {
+            switch (direction) {
+                case Direction.Up:
+                    this.SetPixels(
+                        this.MapLayoutData.Texture,
+                        new(localX + this.MapLayoutData.DoorOffset.x, localY),
+                        upDownDoorSize,
+                        doorColor
+                    );
+                    break;
+                case Direction.Left:
+                    this.SetPixels(
+                        this.MapLayoutData.Texture,
+                        new(localX, localY + this.MapLayoutData.DoorOffset.y),
+                        leftRightDoorSize,
+                        doorColor
+                    );
+                    break;
+                case Direction.Down:
+                    this.SetPixels(
+                        this.MapLayoutData.Texture,
+                        new(localX + this.MapLayoutData.DoorOffset.x, localY + this.MapLayoutData.RoomSize.y - this.MapLayoutData.RoomOffset.y),
+                        upDownDoorSize,
+                        doorColor
+                    );
+                    break;
+                case Direction.Right:
+                    this.SetPixels(
+                        this.MapLayoutData.Texture,
+                        new(localX + this.MapLayoutData.RoomSize.x - this.MapLayoutData.RoomOffset.x, localY + this.MapLayoutData.DoorOffset.y),
+                        leftRightDoorSize,
+                        doorColor
+                    );
+                    break;
+            }
+        }
+
+        this.MapLayoutData.Texture.Apply();
+        this.RoomEntries[room.Position].Drawn = true;
+        return Sprite.Create(
+            this.MapLayoutData.Texture,
+            new(0, 0, this.MapLayoutData.TextureSize.x, this.MapLayoutData.TextureSize.y),
+            Vector2.zero,
+            16
+        );
+    }
+
+    private void CreateMapLayoutSprite() {
+        Vector2Int mapSize = new(this.MapLayoutData.MaxI - this.MapLayoutData.MinI + 1, this.MapLayoutData.MaxJ - this.MapLayoutData.MinJ + 1);
+        this.MapLayoutData.TextureSize = new(mapSize.x * this.MapLayoutData.RoomSize.x, mapSize.y * this.MapLayoutData.RoomSize.y);
+        this.MapLayoutData.Texture = new(this.MapLayoutData.TextureSize.x, this.MapLayoutData.TextureSize.y);
+        this.SetPixels(this.MapLayoutData.Texture, Vector2Int.zero, this.MapLayoutData.TextureSize, new Color32(255, 255, 255, 0));
+        this.MapLayoutData.Texture.filterMode = FilterMode.Point;
+    }
+
+    private void SetPixels(Texture2D texture, Vector2Int position, Vector2Int size, Color32 color) {
+        texture.SetPixels32(
+            position.x, position.y, size.x, size.y,
+            Enumerable.Repeat(color, size.x * size.y).ToArray()
+        );
     }
 }

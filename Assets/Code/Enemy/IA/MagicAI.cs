@@ -6,7 +6,7 @@ public class MagicAI : MonoBehaviour {
         if (enemy.MovementDirection.magnitude < data.Range && Time.time > data.LastCast + data.CastDelay) {
             enemy.MovementDirection /= 3f;
             if (enemy.MovementDirection.magnitude < 0.5f) {
-                enemy.MovementDirection = new();
+                enemy.MovementDirection = Vector2.zero;
             }
             Spell spell = Utils.Sample(data.Spells);
             spell.Layer = "Enemy/Spell";
@@ -17,6 +17,6 @@ public class MagicAI : MonoBehaviour {
         if (enemy.MovementDirection.magnitude > 1) {
             enemy.MovementDirection.Normalize();
         }
-        enemy.MovementDirection = new();
+        enemy.MovementDirection = Vector2.zero;
     }
 }

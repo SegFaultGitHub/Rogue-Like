@@ -94,7 +94,7 @@ public class Enemy : MonoBehaviour {
                     this.MovementDirection *= Mathf.Clamp((1 - (now - this.StartMoving) / (this.MoveUntil - this.StartMoving)), 0.5f, 1f) / 2;
                 } else if (now < this.StartMoving) {
                     // Waiting to move
-                    this.MovementDirection = new();
+                    this.MovementDirection = Vector2.zero;
                 } else {
                     // Just ended moving
                     this.StartMoving = now + UnityEngine.Random.Range(this.StayDuration[0], this.StayDuration[1]);
