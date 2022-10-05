@@ -1,3 +1,5 @@
+#if (UNITY_EDITOR)
+
 using UnityEditor;
 using UnityEngine;
 using System.IO;
@@ -9,7 +11,8 @@ public class CreateAnimations : EditorWindow {
 
     [MenuItem("Tools/Create Animations")]
     public static void Run() {
-        GetWindow<CreateAnimations>("Create Animations");
+        //GetWindow<CreateAnimations>("Create Animations");
+        Create("Bat", false);
     }
 
     private void OnGUI() {
@@ -34,16 +37,6 @@ public class CreateAnimations : EditorWindow {
 
         if (skipAnimator) { return; }
 
-        //AnimatorController controller = new() {
-        //    name = name
-        //};
-        //controller.AddLayer("Base Layer");
-        //SetupAnimatorController(controller, idleClip, walkClip);
-
-        //CreateOrReplaceAsset(controller, $"Assets/Animations/" + name + "/" + name + ".controller");
-        //AssetDatabase.SaveAssets();
-
-        //return;
         AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>($"Assets/Animations/Characters/" + name + "/" + name + ".controller");
 
         if (controller == null) {
@@ -118,6 +111,32 @@ public class CreateAnimations : EditorWindow {
         return clip;
     }
 
+    private static AnimationClip CreateChargingAnimation(string name) {
+        AnimationClip clip = new() {
+            name = name + "-Charging",
+            wrapMode = WrapMode.Loop,
+            frameRate = 60,
+        };
+        AnimationClipSettings clipSettings =  AnimationUtility.GetAnimationClipSettings(clip);
+        clipSettings.loopTime = true;
+        AnimationUtility.SetAnimationClipSettings(clip, clipSettings);
+
+        Keyframe[] keyFrames = new Keyframe[] {
+            new Keyframe(FrameToSeconds(clip, 0), 0),
+            new Keyframe(FrameToSeconds(clip, 2), 1),
+            new Keyframe(FrameToSeconds(clip, 6), -1),
+            new Keyframe(FrameToSeconds(clip, 8), 0),
+        };
+        clip.SetCurve("", typeof(RectTransform), "localPosition.x", new AnimationCurve(keyFrames));
+
+        Directory.CreateDirectory($"Assets/Animations/Characters/" + name + "/Clips");
+
+        CreateOrReplaceAsset(clip, $"Assets/Animations/Characters/" + name + "/Clips/" + name + "-Charging.anim");
+        AssetDatabase.SaveAssets();
+
+        return clip;
+    }
+
     private static AnimationClip CreateWalkAnimation(string name) {
         AnimationClip clip = new() {
             name = name + "-Walk",
@@ -128,10 +147,11 @@ public class CreateAnimations : EditorWindow {
         clipSettings.loopTime = true;
         AnimationUtility.SetAnimationClipSettings(clip, clipSettings);
 
-        EditorCurveBinding spriteBinding = new();
-        spriteBinding.type = typeof(SpriteRenderer);
-        spriteBinding.path = "Sprites/Body";
-        spriteBinding.propertyName = "m_Sprite";
+        EditorCurveBinding spriteBinding = new() {
+            type = typeof(SpriteRenderer),
+            path = "Sprites/Body",
+            propertyName = "m_Sprite"
+        };
         Sprite[] sprites = Resources.LoadAll<Sprite>("Characters/" + name + "/Walk");
 
         ObjectReferenceKeyframe[] keyFrames = new ObjectReferenceKeyframe[sprites.Length + 1];
@@ -183,3 +203,5 @@ public class CreateAnimations : EditorWindow {
         }
     }
 }
+
+#endif

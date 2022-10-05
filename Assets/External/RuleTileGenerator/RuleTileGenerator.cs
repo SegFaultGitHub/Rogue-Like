@@ -1,12 +1,11 @@
-﻿//This tool is a part of the VinTools Unity Package: https://vinarkgames.itch.io/vintools
+﻿#if UNITY_EDITOR
 
-using System.Collections;
+//This tool is a part of the VinTools Unity Package: https://vinarkgames.itch.io/vintools
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.Tilemaps;
-
-#if UNITY_EDITOR
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0009:L'accès au membre doit être qualifié.", Justification = "<En attente>")]
 public class RuleTileGenerator : EditorWindow {
     Vector2 scrollpos;

@@ -14,4 +14,5 @@ public abstract class Spell : MonoBehaviour {
     }
 
     public abstract void CastTowards(Vector2 from, Vector2 to);
+    public abstract void CastTowards(Vector2 from, Vector2 to, float offset);
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public static class Utils {
@@ -19,6 +20,10 @@ public static class Utils {
     }
 
     public static T Sample<T>(List<T> list) {
+        if (list.Count == 0) {
+            Debug.LogError("Trying to sample an empty list");
+            return default;
+        }
         return list[Random.Range(0, list.Count)];
     }
 
