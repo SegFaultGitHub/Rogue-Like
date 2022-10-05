@@ -11,6 +11,7 @@ TagManager:
   - Map
   - Enemy/DetectionZone
   - Player/PlayerHUD
+  - Enemy/AttackZone
   layers:
   - Default
   - TransparentFX
@@ -27,7 +28,7 @@ TagManager:
   - Map/Walls
   - Player/Hitbox
   - Enemy/Hitbox
-  - 
+  - Enemy/FlyingEnemy
   - 
   - 
   - 

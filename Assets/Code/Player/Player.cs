@@ -9,6 +9,19 @@ public class Player : MonoBehaviour {
     }
 
     [SerializeField] public _HP HP;
+    [SerializeField] private float InvulnerabilityDuration;
+    private float InvulnerableUntil;
+    private bool Invulnerable { get => this.InvulnerableUntil > Time.time; }
+
+    public bool TakeDamage(int damage) {
+        float now = Time.time;
+        if (this.Invulnerable)
+            return false;
+
+        this.HP.Current -= damage;
+        this.InvulnerableUntil = now + this.InvulnerabilityDuration;
+        return true;
+    }
 
     public void OnTriggerEnter2D(Collider2D collider) {
         if (collider.CompareTag("Door/Left")) {
@@ -30,14 +43,21 @@ public class Player : MonoBehaviour {
         }
 
         if (collider.CompareTag("Enemy/DetectionZone")) {
-            Enemy enemy = collider.gameObject.GetComponent<Enemy>();
+            Enemy enemy = collider.transform.parent.GetComponent<Enemy>();
             enemy.GainFocus();
+        }
+    }
+
+    public void OnTriggerStay2D(Collider2D collider) {
+        if (collider.CompareTag("Enemy/AttackZone")) {
+            Enemy enemy = collider.transform.parent.GetComponent<Enemy>();
+            enemy.Attack();
         }
     }
 
     public void OnTriggerExit2D(Collider2D collider) {
         if (collider.CompareTag("Enemy/DetectionZone")) {
-            Enemy enemy = collider.gameObject.GetComponent<Enemy>();
+            Enemy enemy = collider.transform.parent.GetComponent<Enemy>();
             enemy.LoseFocus();
         }
     }

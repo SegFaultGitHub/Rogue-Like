@@ -1,8 +1,9 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Room : MonoBehaviour {
+
     public Vector2 StartingPosition;
     public bool Enabled;
 
@@ -19,11 +20,16 @@ public class Room : MonoBehaviour {
     public bool DownDoorAllowed = true;
 
     [Header("Doorways")]
-    public Direction[] Directions;
+    [HideInInspector] public Direction[] Directions;
+    [SerializeField] public List<Map.DirectionGroup> DirectionGroups;
 
     [Header("Special")]
     [SerializeField] private bool BossRoom;
     [SerializeField] private bool TreasureRoom;
+
+    [Header("Debug data")]
+    public bool Hub;
+    public Direction OriginalDirection;
 
     public void Awake() {
         this.FromLeftPosition = new(-15f, -1.5f);
